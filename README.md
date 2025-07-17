@@ -3,7 +3,8 @@
 Welcome to my **personal developer portfolio** website!  
 Built to showcase my work, projects, skills, and passion for building scalable web applications.
 
-Live Site: [Visit Portfolio on Vercel 🚀](pranjali-goyal-webfolio-glow-3ixttdno8.vercel.app)
+Live Site: [Visit Portfolio on Vercel 🚀](https://pranjali-goyal-webfolio-glow-3ixttdno8.vercel.app)
+
 
 ---
 
