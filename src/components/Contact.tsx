@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, MapPin, Phone, Send, Github, Linkedin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import emailjs from '@emailjs/browser';
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -12,9 +13,10 @@ export const Contact = () => {
     email: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple form validation
@@ -27,14 +29,41 @@ export const Contact = () => {
       return;
     }
 
-    // Here you would typically send the form data to your backend
-    toast({
-      title: "Message sent successfully!",
-      description: "Thank you for reaching out. I'll get back to you soon.",
-    });
+    setIsSubmitting(true);
 
-    // Reset form
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      // EmailJS configuration
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_name: 'Pranjali', // Your name
+      };
+
+      await emailjs.send(
+        'service_8390m98', // Your service ID
+        'template_xvka6yp', // Your template ID
+        templateParams,
+        '1TORf6BqL783RQUEn' // Your public key
+      );
+
+      toast({
+        title: "Message sent successfully!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
+      });
+
+      // Reset form
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      toast({
+        title: "Failed to send message",
+        description: "There was an error sending your message. Please try again or contact me directly via email.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -201,10 +230,11 @@ export const Contact = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-primary-foreground py-3 glow"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-primary-foreground py-3 glow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="mr-2 h-4 w-4" />
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </CardContent>
